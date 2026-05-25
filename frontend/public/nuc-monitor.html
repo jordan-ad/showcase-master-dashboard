@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Showcase NUC Dashboard — AD Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: #2a2a2a;
+    --border-light: #333;
+    --online: #4ade80;
+    --offline: #f87171;
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #444;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.12);
+    --nsw: #c9a96e;
+    --vic: #8b7355;
+    --qld: #a0845c;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans), sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12,12,12,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-top {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-wordmark {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .logo-wordmark:hover { opacity: 0.75; }
+
+  .logo-wordmark svg {
+    height: 22px;
+    width: auto;
+    filter: invert(1);
+  }
+
+  .logo-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-light);
+  }
+
+  .logo-sub {
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--online);
+    border-radius: 50%;
+    animation: breathe 2s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .last-updated {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    color: var(--text2);
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .refresh-btn.spinning svg { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TOOLBAR */
+  .toolbar {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 52px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-right: 8px;
+  }
+
+  .tab {
+    padding: 5px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text3);
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .tab:hover { color: var(--text2); border-color: var(--border); }
+  .tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    padding: 6px 0 6px 20px;
+    color: var(--text);
+    font-family: var(--sans), sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  .search-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  .filters {
+    display: flex;
+    gap: 2px;
+  }
+
+  .filter-btn {
+    padding: 5px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text3);
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .filter-btn:hover { color: var(--text2); border-color: var(--border); }
+  .filter-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
+  /* Styled select to match toolbar UI */
+  .filter-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    color: var(--text2);
+    padding: 5px 28px 5px 12px;
+    min-width: 120px;
+    line-height: 1.2;
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="%238a8a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  .filter-select:hover { border-color: var(--border); color: var(--text); }
+  .filter-select:focus, .filter-select:active {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-dim);
+    background-color: var(--surface);
+    color: var(--text);
+  }
+  .filter-select:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Ensure the native dropdown menu matches the theme */
+  .filter-select option,
+  .filter-select optgroup {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .filter-select option:checked {
+    background: var(--accent-dim);
+    color: var(--text);
+  }
+  /* Hide old Edge/IE expand arrow if present (harmless elsewhere) */
+  .filter-select::-ms-expand { display: none; }
+
+  .toolbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* NOTIFY MODE TOGGLE */
+  .notify-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px;
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    color: var(--text2);
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .notify-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .notify-toggle.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  .notify-toggle .switch {
+    width: 22px;
+    height: 12px;
+    background: var(--border);
+    border-radius: 6px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .notify-toggle.active .switch { background: var(--accent); }
+
+  .notify-toggle .switch::after {
+    content: '';
+    position: absolute;
+    top: 1px; left: 1px;
+    width: 10px; height: 10px;
+    background: var(--bg);
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .notify-toggle.active .switch::after { transform: translateX(10px); }
+
+  .stat-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .stat-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .stat-dot.green { background: var(--online); }
+  .stat-dot.red { background: var(--offline); }
+  .stat span { color: var(--text2); }
+
+  /* MAIN */
+  .main {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 32px;
+    padding-bottom: 120px;
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 48px; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-family: var(--serif), serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .card:hover { background: var(--surface2); }
+
+  .card.selectable { cursor: pointer; }
+
+  .card.selected {
+    background: var(--accent-dim);
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .card-thumb {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .card-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.4);
+  }
+
+  .card-status.online { background: var(--online); }
+  .card-status.offline { background: var(--offline); }
+
+  .card-checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.6);
+    border-radius: 3px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  body.notify-mode .card.selectable .card-checkbox { display: flex; }
+  .card.selected .card-checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Exclude toggle button (per-card) */
+  .exclude-toggle {
+    position: absolute;
+    top: 8px;
+    right: 28px; /* leave room for the status dot at right:10px */
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.8);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .exclude-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .exclude-toggle.active {
+    background: rgba(201,169,110,0.25);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .excluded-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 10px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    opacity: 0.9;
+  }
+
+  .offline-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text3);
+  }
+
+  .offline-icon {
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--offline);
+    opacity: 0.6;
+  }
+
+  .offline-text {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .card-info { padding: 14px 16px 16px; }
+
+  .card-name {
+    font-family: var(--sans), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .card-time { color: var(--text2); }
+
+  .card-state {
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .state-nsw { color: var(--nsw); background: rgba(201,169,110,0.1); }
+  .state-vic { color: var(--vic); background: rgba(139,115,85,0.1); }
+  .state-qld { color: var(--qld); background: rgba(160,132,92,0.1); }
+  .state-other { color: var(--text3); background: rgba(100,100,100,0.1); }
+
+  /* NUCS TAB */
+  .nucs-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .nucs-search {
+    flex: 1;
+    max-width: 320px;
+    background: transparent;
+    border: 1px solid var(--border-light);
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--sans), sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    outline: none;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .nucs-search:focus { border-color: var(--accent); }
+  .nucs-search::placeholder { color: var(--text3); }
+
+  .auto-assign-btn {
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .auto-assign-btn:hover { background: var(--accent-dim); }
+
+  .nucs-summary {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nucs-summary strong { color: var(--accent); font-weight: 500; }
+
+  /* CLIENTS TAB */
+  .clients-table {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-collapse: collapse;
+  }
+
+  .clients-table thead th {
+    text-align: left;
+    padding: 14px 16px;
+    font-family: var(--sans), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .clients-table tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .clients-table tbody tr:last-child { border-bottom: none; }
+
+  .clients-table td {
+    padding: 6px 8px;
+    vertical-align: middle;
+  }
+
+  .clients-table td.dev-cell {
+    padding: 12px 16px;
+    font-family: var(--sans), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    width: 240px;
+  }
+
+  .client-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: var(--sans), sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    outline: none;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+
+  .client-input:hover { border-color: var(--border); }
+  .client-input:focus { border-color: var(--accent); background: var(--bg); }
+  .client-input::placeholder { color: var(--text3); }
+
+  .save-status {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 12px;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .save-status.saving { color: var(--text2); }
+  .save-status.saved { color: var(--online); }
+  .save-status.error { color: var(--offline); }
+
+  .clients-help {
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-left: 2px solid var(--accent);
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    font-family: var(--sans), sans-serif;
+  }
+
+  /* FLOATING ACTION BAR */
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: rgba(12,12,12,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--accent);
+    padding: 16px 32px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .action-bar.visible { display: flex; }
+
+  .action-summary {
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .action-summary strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-secondary, .btn-primary {
+    padding: 10px 22px;
+    border-radius: 2px;
+    font-family: var(--sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text2);
+  }
+
+  .btn-secondary:hover { border-color: var(--text2); color: var(--text); }
+
+  .btn-primary {
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    top: 90px;
+    right: 32px;
+    z-index: 300;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--accent);
+    padding: 16px 22px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 380px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transform: translateX(420px);
+    transition: transform 0.3s ease;
+  }
+
+  .toast.visible { transform: translateX(0); }
+  .toast.success { border-left-color: var(--online); }
+  .toast.error { border-left-color: var(--offline); }
+
+  .toast-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .toast-body {
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  .toast-body ul { margin-top: 6px; padding-left: 18px; }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.96);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox-inner {
+    max-width: 100%;
+    max-height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .lightbox-img {
+    max-width: 100%;
+    max-height: calc(100vh - 160px);
+    object-fit: contain;
+    display: block;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .lightbox-close:hover { color: var(--accent); }
+
+  .lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    font-size: 40px;
+    cursor: pointer;
+    padding: 20px;
+    transition: color 0.2s;
+    font-family: var(--serif), serif;
+  }
+
+  .lightbox-nav:hover { color: var(--accent); }
+  .lightbox-nav.prev { left: 40px; }
+  .lightbox-nav.next { right: 40px; }
+
+  .lightbox-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+  }
+
+  .lightbox-name {
+    font-family: var(--serif), serif;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .lightbox-time {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* LOADING / EMPTY / ERROR */
+  .loading-state, .empty-state, .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: var(--text2);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    gap: 16px;
+  }
+
+  .loading-ring {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text { color: var(--text3); }
+  .error-state { color: var(--offline); }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-area">
+      <a class="logo-wordmark" onclick="resetDashboard()" href="#" title="Back to all NUCs">
+        <?xml version="1.0" encoding="UTF-8"?> <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="358" viewBox="0 0 1280 358" fill="none"><path d="M1162.22 215.628C1162.22 225.185 1154.47 232.933 1144.91 232.933C1135.36 232.933 1127.61 225.185 1127.61 215.628C1127.61 206.07 1135.36 198.322 1144.91 198.322C1154.47 198.322 1162.22 206.07 1162.22 215.628Z" fill="black"></path><path d="M1090.09 191.177H1118.93C1114.07 203.524 1106.68 213.441 1096.77 220.93C1087.05 228.419 1074.7 232.164 1059.73 232.164C1041.31 232.164 1025.82 225.586 1013.28 212.429C1000.73 199.273 994.452 182.575 994.452 162.334C994.452 142.094 1000.62 125.396 1012.97 112.24C1025.32 99.0834 1040.4 92.5052 1058.21 92.5052C1076.02 92.5052 1091.1 99.0834 1103.45 112.24C1115.79 125.396 1121.97 142.094 1121.97 162.334C1121.97 163.751 1121.66 166.585 1121.05 170.835L1120.45 174.479H1023.29C1024.1 183.182 1027.95 190.671 1034.83 196.945C1041.71 203.22 1050.01 206.357 1059.73 206.357C1072.28 206.357 1082.4 201.297 1090.09 191.177ZM1023.29 151.708H1096.16C1094.34 141.588 1090.19 133.492 1083.71 127.42C1077.23 121.348 1068.73 118.312 1058.21 118.312C1049.3 118.312 1041.61 121.449 1035.13 127.723C1028.86 133.796 1024.91 141.791 1023.29 151.708Z" fill="black"></path><path d="M885.086 186.623H912.411C914.03 199.779 922.126 206.357 936.699 206.357C944.795 206.357 950.867 204.839 954.916 201.803C958.964 198.767 960.988 194.719 960.988 189.659C960.988 185.206 958.458 181.765 953.397 179.336C948.54 176.705 942.468 174.681 935.181 173.264C928.097 171.645 920.912 169.722 913.625 167.496C906.541 165.067 900.469 161.019 895.409 155.352C890.551 149.684 888.122 142.398 888.122 133.492C888.122 121.753 892.373 112.037 900.874 104.346C909.577 96.4521 921.013 92.5052 935.181 92.5052C950.766 92.5052 962.809 96.3509 971.31 104.042C979.811 111.531 984.466 121.854 985.276 135.01H957.952C957.142 130.152 954.713 126.205 950.665 123.169C946.819 119.931 941.658 118.312 935.181 118.312C928.704 118.312 923.543 119.83 919.697 122.866C915.852 125.902 913.929 129.444 913.929 133.492C913.929 137.945 916.358 141.487 921.215 144.118C926.275 146.547 932.348 148.571 939.432 150.19C946.718 151.607 953.903 153.53 960.988 155.959C968.274 158.185 974.346 162.132 979.204 167.799C984.264 173.467 986.794 180.753 986.794 189.659C986.794 202.208 982.341 212.429 973.435 220.323C964.53 228.217 952.284 232.164 936.699 232.164C903.91 232.164 886.706 216.983 885.086 186.623Z" fill="black"></path><path d="M850.593 230.646L844.521 216.983C841.08 220.424 837.942 222.954 835.109 224.574C827.013 229.634 816.994 232.164 805.052 232.164C790.074 232.164 778.436 228.419 770.137 220.93C762.041 213.441 757.993 203.524 757.993 191.177C757.993 176.402 764.268 165.168 776.817 157.477C789.366 149.583 811.428 145.636 843.003 145.636V141.082C843.003 133.998 840.776 128.432 836.323 124.384C831.87 120.336 825.495 118.312 817.196 118.312C800.801 118.312 791.693 123.878 789.872 135.01H762.547C763.357 122.461 768.518 112.24 778.031 104.346C787.746 96.4521 800.801 92.5052 817.196 92.5052C832.984 92.5052 845.735 97.1605 855.45 106.471C865.368 115.579 870.327 127.116 870.327 141.082V230.646H850.593ZM843.003 177.211V169.925C820.333 169.925 805.052 171.847 797.158 175.693C789.264 179.336 785.318 185.004 785.318 192.695C785.318 196.743 787.24 200.285 791.086 203.321C794.932 206.357 800.093 207.875 806.57 207.875C817.702 207.875 826.507 204.94 832.984 199.071C839.663 193.201 843.003 185.914 843.003 177.211Z" fill="black"></path><path d="M720.876 180.551H749.719C746.48 195.731 739.396 208.179 728.467 217.894C717.739 227.407 704.583 232.164 688.998 232.164C670.579 232.164 655.095 225.586 642.546 212.429C629.997 199.273 623.723 182.575 623.723 162.334C623.723 142.094 629.997 125.396 642.546 112.24C655.095 99.0834 670.579 92.5052 688.998 92.5052C704.583 92.5052 717.739 97.3629 728.467 107.078C739.396 116.591 746.48 128.938 749.719 144.118H720.876C715.816 126.914 705.19 118.312 688.998 118.312C678.878 118.312 669.972 122.562 662.281 131.063C654.792 139.362 651.047 149.785 651.047 162.334C651.047 174.883 654.792 185.408 662.281 193.909C669.972 202.208 678.878 206.357 688.998 206.357C705.19 206.357 715.816 197.755 720.876 180.551Z" fill="black"></path><path d="M478.557 230.646L433.016 94.0233H460.341L490.701 188.141L521.062 94.0233H539.278L569.639 188.141L599.999 94.0233H627.324L581.783 230.646H559.012L530.17 141.082L501.327 230.646H478.557Z" fill="black"></path><path d="M345.457 193.909C353.148 202.208 362.054 206.357 372.174 206.357C382.294 206.357 391.099 202.208 398.588 193.909C406.279 185.408 410.125 174.883 410.125 162.334C410.125 149.785 406.279 139.362 398.588 131.063C391.099 122.562 382.294 118.312 372.174 118.312C362.054 118.312 353.148 122.562 345.457 131.063C337.968 139.362 334.223 149.785 334.223 162.334C334.223 174.883 337.968 185.408 345.457 193.909ZM418.625 212.429C406.076 225.586 390.593 232.164 372.174 232.164C353.755 232.164 338.271 225.586 325.722 212.429C313.173 199.273 306.899 182.575 306.899 162.334C306.899 142.094 313.173 125.396 325.722 112.24C338.271 99.0834 353.755 92.5052 372.174 92.5052C390.593 92.5052 406.076 99.0834 418.625 112.24C431.175 125.396 437.449 142.094 437.449 162.334C437.449 182.575 431.175 199.273 418.625 212.429Z" fill="black"></path><path d="M172.206 230.646V39.3743H199.53V107.686C202.566 104.649 205.805 102.119 209.245 100.095C218.151 95.0353 227.563 92.5052 237.481 92.5052C252.863 92.5052 265.817 98.0713 276.342 109.204C286.867 120.336 292.13 134.504 292.13 151.708V230.646H264.805V151.708C264.805 142.803 261.567 135.01 255.09 128.331C248.815 121.651 241.428 118.312 232.927 118.312C223.818 118.312 215.925 121.651 209.245 128.331C202.769 134.808 199.530 142.6 199.530 151.708V230.646H172.206Z" fill="black"></path><path d="M53.2824 186.623H80.6069C82.2261 199.779 90.3223 206.357 104.895 206.357C112.991 206.357 119.064 204.839 123.112 201.803C127.16 198.767 129.184 194.719 129.184 189.659C129.184 185.206 126.654 181.765 121.594 179.336C116.736 176.705 110.664 174.681 103.377 173.264C96.2932 171.645 89.1079 169.722 81.8213 167.496C74.7372 165.067 68.6651 161.019 63.605 155.352C58.7473 149.684 56.3185 142.398 56.3185 133.492C56.3185 121.753 60.569 112.037 69.0699 104.346C77.7733 96.4521 89.2091 92.5052 103.377 92.5052C118.962 92.5052 131.005 96.3509 139.506 104.042C148.007 111.531 152.663 121.854 153.472 135.01H126.148C125.338 130.152 122.909 126.205 118.861 123.169C115.016 119.931 109.854 118.312 103.377 118.312C96.9004 118.312 91.7391 119.83 87.8934 122.866C84.0478 125.902 82.1249 129.444 82.1249 133.492C82.1249 137.945 84.5538 141.487 89.4115 144.118C94.4716 146.547 100.544 148.571 107.628 150.190C114.914 151.607 122.100 153.530 129.184 155.959C136.470 158.185 142.542 162.132 147.400 167.799C152.460 173.467 154.990 180.753 154.990 189.659C154.990 202.208 150.537 212.429 141.632 220.323C132.726 228.217 120.480 232.164 104.895 232.164C72.106 232.164 54.9017 216.983 53.2824 186.623Z" fill="black"></path><path d="M1216.94 129.843L1216.94 129.848V0.440125L1279.99 65.1301H1280V65.1423L1280 65.1443L1280 65.1463L1280 357.241H59.6214V357.236L59.6163 357.241L0 301.696H59.6214V301.694H1216.94V129.843Z" fill="black"></path><path d="M1216.94 129.843L1216.94 129.848V0.440125L1279.99 65.1301H1280V65.1423L1280 65.1443L1280 65.1463L1280 357.241H59.6214V357.236L59.6163 357.241L0 301.696H59.6214V301.694H1216.94V129.843Z" fill="black"></path></svg>
+      </a>
+      <div class="logo-divider"></div>
+      <span class="logo-sub">NUC Dashboard</span>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Live
+      </div>
+      <span class="last-updated" id="lastUpdated">—</span>
+      <button class="refresh-btn" id="refreshBtn" onclick="loadScreenshots()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+          <path d="M8 16H3v5"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="tabs">
+      <button class="tab active" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="tab" data-tab="nucs" onclick="switchTab('nucs')">NUC Assignment</button>
+      <button class="tab" data-tab="clients" onclick="switchTab('clients')">Projects</button>
+    </div>
+    <div class="toolbar-divider" id="dashboardToolbarDivider"></div>
+    <div id="dashboardToolbar" style="display:flex; align-items:center; gap:24px; flex:1;">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search display suite..." aria-label="Search display suite">
+      </div>
+      <div class="filters">
+        <select id="stateFilter" class="filter-select" aria-label="Filter by state">
+          <option value="all" selected>All</option>
+          <option value="2">NSW</option>
+          <option value="3">VIC</option>
+          <option value="4">QLD</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <button class="notify-toggle" id="notifyToggle" onclick="toggleNotifyMode()">
+          <span class="switch" aria-hidden="true"></span>
+          <span>Notify mode</span>
+        </button>
+        <button class="btn-secondary" id="copyOfflineBtn" onclick="copyOfflineReport()" title="Copy list of offline, non-excluded NUCs">Copy Offline</button>
+        <div class="stat-group">
+          <div class="stat">
+            <div class="stat-dot green"></div>
+            <span id="onlineCount">—</span>
+          </div>
+          <div class="stat">
+            <div class="stat-dot red"></div>
+            <span id="offlineCount">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboardView">
+    <div id="mainContent">
+      <div class="loading-state">
+        <div class="loading-ring"></div>
+        <div class="loading-text">Loading display suites</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUCS VIEW -->
+  <div id="nucsView" class="hidden">
+    <div class="clients-help">
+      Each NUC must be assigned to a project before it can be used in client notifications.
+      Click in the field, start typing, and pick the matching project from the autocomplete suggestions. Assignments save automatically.
+    </div>
+    <div class="nucs-toolbar">
+      <input type="text" class="nucs-search" id="nucsSearch" placeholder="Search NUCs..." aria-label="Search NUCs">
+      <div class="nucs-summary" id="nucsSummary">—</div>
+    </div>
+    <div id="nucsContent">
+      <div class="loading-state">
+        <div class="loading-ring"></div>
+        <div class="loading-text">Loading NUCs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS VIEW -->
+  <div id="clientsView" class="hidden">
+    <div class="clients-help">
+      One row per project. Add a primary contact (the person we address in the email) and any additional people to CC.
+      Use commas to separate multiple CC emails. Changes save automatically. The project name is used in the email subject and body as-is.
+    </div>
+    <div id="clientsContent">
+      <div class="loading-state">
+        <div class="loading-ring"></div>
+        <div class="loading-text">Loading projects</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING ACTION BAR -->
+<div class="action-bar" id="actionBar">
+  <div class="action-summary">
+    <strong id="selectionCount">0</strong> NUC<span id="selectionPlural">s</span> selected
+    · <strong id="projectCount">0</strong> project<span id="projectPlural">s</span> will be drafted
+  </div>
+  <div class="action-buttons">
+    <button class="btn-secondary" onclick="clearSelection()">Clear</button>
+    <button class="btn-primary" id="createDraftsBtn" onclick="createDrafts()">Create drafts</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle"></div>
+  <div class="toast-body" id="toastBody"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightboxBtn()">✕</button>
+    <button class="lightbox-nav prev" onclick="navigateLightbox(-1)">‹</button>
+    <button class="lightbox-nav next" onclick="navigateLightbox(1)">›</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <div class="lightbox-bar">
+      <span class="lightbox-name" id="lightboxName"></span>
+      <span class="lightbox-time" id="lightboxTime"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============== CONFIG ===============
+const API_KEY            = 'AIzaSyBRVIbYrd43HdqoxNiw601_xC4jwTT_sEY';
+const FOLDER_ID          = '1KaH19gjY4Kln-NHhqkLPD_tMj85tTt2m';
+const NOTIFICATIONS_URL  = 'https://script.google.com/macros/s/AKfycbzi8xzA3l0UZ4ii6rJWnxuwbdUhYLCVmA5tAG6-Rygu-QcydfXaNchfqVJ8d_7I8wSX/exec';
+
+// =============== STATE ===============
+let allFiles        = [];
+let filteredFiles   = [];
+let currentIndex    = 0;
+let activeState     = 'all';
+let searchQuery     = '';
+let currentTab      = 'dashboard';
+let notifyMode      = false;
+let selectedIds     = new Set();   // NUC file IDs selected for drafting
+let clientsData     = {};          // { project: { displayName, primaryName, primaryEmail, ccEmails } }
+let assignmentsData = {};          // { nucKey: 'ProjectName' }   ← source of truth for project membership
+let assignmentsLoaded = false;
+let clientSaveTimers = {};
+let nucSaveTimers    = {};
+let excludedNucs     = new Set();   // nucKeys excluded from offline count (persisted in localStorage)
+
+// =============== STATE / NAME HELPERS ===============
+// Exclusion storage helpers (exclude specific NUCs from offline count)
+function loadExcluded() {
+  try {
+    const raw = localStorage.getItem('excludedNucs');
+    const arr = raw ? JSON.parse(raw) : [];
+    excludedNucs = new Set(Array.isArray(arr) ? arr : []);
+  } catch (e) {
+    excludedNucs = new Set();
+  }
+}
+function saveExcluded() {
+  try { localStorage.setItem('excludedNucs', JSON.stringify([...excludedNucs])); } catch (e) {}
+}
+function isExcluded(f) {
+  const key = f.nucKey || getNucKey(f.name);
+  return excludedNucs.has(key);
+}
+function toggleExclude(e, nucKey) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  if (excludedNucs.has(nucKey)) excludedNucs.delete(nucKey);
+  else excludedNucs.add(nucKey);
+  saveExcluded();
+  updateStats();
+  renderGrid();
+}
+function getStateFromName(name) {
+  const c = name.charAt(0);
+  if (c === '2') return '2';
+  if (c === '3') return '3';
+  if (c === '4') return '4';
+  return 'other';
+}
+
+function getStateLabel(s) {
+  return { '2': 'NSW', '3': 'VIC', '4': 'QLD', 'other': '—' }[s] || '—';
+}
+
+function getStateClass(s) {
+  return { '2': 'state-nsw', '3': 'state-vic', '4': 'state-qld' }[s] || 'state-other';
+}
+
+// Stable NUC identifier — the filename minus the date suffix
+function getNucKey(filename) {
+  return filename.replace(/ - \d{4}-\d{2}-\d{2} \d{2}-\d{2}\.jpg$/, '');
+}
+
+// Project for a given file — pulled from manual assignments only.
+// Returns empty string if the NUC is not yet assigned to a project.
+function effectiveProject(f) {
+  const key = getNucKey(f.name);
+  return (assignmentsData[key] || '').trim();
+}
+
+// Extract development name (the 3rd path segment of the original NUC ID)
+// from a filename like "2-ALAND-THE-WALDEN-55 - 2026-04-15 08-30.jpg".
+//
+// Handles the messier real-world cases too:
+//   "3-OTELLO-FLOWE BOWDEN (SA) - ..."   → "FLOWE BOWDEN"
+//   "2-STARGATE-SIGNATURE (3D) - ..."    → "SIGNATURE"
+//   "3-ABADEEN-GRANDVIEW [LED] - ..."    → "GRANDVIEW"
+//   "4-CADRE-SOLHAVEN (NSW) - ..."       → "SOLHAVEN"
+//   "2-MORAN-INDIGO - ..."               → "INDIGO"        (no screen segment)
+//   "4-SHERPA-SYMPHONY-68 - ..."         → "SYMPHONY"      (numeric screen)
+//   "ALEX - ..."                          → "ALEX"          (single token, no convention)
+function extractDevelopment(filename) {
+  // 1. Strip the date suffix: " - 2026-04-15 08-30.jpg"
+  let s = filename.replace(/ - \d{4}-\d{2}-\d{2} \d{2}-\d{2}\.jpg$/, '');
+
+  // 2. Repeatedly strip trailing screen-type indicators in (parens) or [brackets]
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(/\s*\([^)]*\)\s*$/, '').replace(/\s*\[[^]]*\]\s*$/, '').trim();
+  } while (s !== prev);
+
+  // 3. Split on hyphens
+  const parts = s.split('-');
+
+  // 4. Drop leading state prefix if it's purely numeric (1-4) or a single letter "X"
+  let start = 0;
+  if (parts.length > 1 && /^(\d+|X)$/i.test(parts[0])) start = 1;
+
+  // 5. Drop trailing numeric screen-type (e.g. "55", "68")
+  let end = parts.length;
+  if (end - start > 1 && /^\d+$/.test(parts[end - 1])) end = end - 1;
+
+  const remaining = parts.slice(start, end);
+  if (remaining.length === 0) return s;
+  if (remaining.length === 1) return remaining[0];
+
+  // 6. First remaining segment is client; the rest joined with "-" is the development
+  return remaining.slice(1).join('-');
+}
+
+function getLastExpectedTime() {
+  const now = new Date();
+  const total = now.getHours() * 60 + now.getMinutes();
+  if (total < 8 * 60 + 30 || total >= 17 * 60 + 10) return null;
+  let rH = 8, rM = 30, last = null;
+  while (rH < 17) {
+    const c = new Date(now); c.setHours(rH, rM, 0, 0);
+    const cWithGrace = new Date(c.getTime() + 10 * 60 * 1000);
+    if (cWithGrace <= now) last = new Date(c);
+    else break;
+    rM += 30; if (rM >= 60) { rM -= 60; rH++; }
+  }
+  return last;
+}
+
+function isOffline(modifiedTime) {
+  const last = getLastExpectedTime();
+  if (!last) return false;
+  return new Date(modifiedTime) < last;
+}
+
+function formatTime(modifiedTime) {
+  const d = new Date(modifiedTime);
+  const now = new Date();
+  const diff = Math.floor((now - d) / 60000);
+  if (diff < 1) return 'just now';
+  if (diff < 60) return `${diff}m ago`;
+  const h = Math.floor(diff / 60);
+  if (h < 24) return `${h}h ago`;
+  return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+function cleanName(filename) {
+  return filename
+    .replace(/ - \d{4}-\d{2}-\d{2} \d{2}-\d{2}\.jpg$/, '')
+    .replace(/^\d+-/, '')
+    .replace(/-/g, ' / ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getThumbUrl(id) { return `https://drive.google.com/thumbnail?id=${id}&sz=w400&key=${API_KEY}`; }
+function getFullUrl(id)  { return `https://drive.google.com/thumbnail?id=${id}&sz=w1600&key=${API_KEY}`; }
+
+// =============== TAB SWITCHING ===============
+function switchTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+
+  const dashView    = document.getElementById('dashboardView');
+  const nucsView    = document.getElementById('nucsView');
+  const clientsView = document.getElementById('clientsView');
+  const dashTb      = document.getElementById('dashboardToolbar');
+  const dashTbDiv   = document.getElementById('dashboardToolbarDivider');
+
+  // Hide all
+  dashView.classList.add('hidden');
+  nucsView.classList.add('hidden');
+  clientsView.classList.add('hidden');
+  dashTb.style.display = 'none';
+  dashTbDiv.style.display = 'none';
+
+  if (name === 'dashboard') {
+    dashView.classList.remove('hidden');
+    dashTb.style.display = 'flex';
+    dashTbDiv.style.display = '';
+  } else if (name === 'nucs') {
+    nucsView.classList.remove('hidden');
+    renderNucsTab();
+  } else if (name === 'clients') {
+    clientsView.classList.remove('hidden');
+    loadClients();
+  }
+}
+
+// =============== SCREENSHOT LOAD / RENDER ===============
+async function loadScreenshots() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  try {
+    const url = `https://www.googleapis.com/drive/v3/files?q='${FOLDER_ID}'+in+parents+and+mimeType='image/jpeg'+and+trashed=false&fields=files(id,name,modifiedTime)&orderBy=name&pageSize=1000&supportsAllDrives=true&includeItemsFromAllDrives=true&key=${API_KEY}`;
+    const data = await fetch(url).then(r => r.json());
+    if (data.error) { showError(data.error.message); return; }
+    allFiles = (data.files || []).map(f => ({
+      ...f,
+      state:   getStateFromName(f.name),
+      offline: isOffline(f.modifiedTime),
+      nucKey:  getNucKey(f.name)
+    }));
+    updateStats();
+    applyFilters();
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+  } catch(e) { showError(e.message); }
+  finally { btn.classList.remove('spinning'); }
+}
+
+function showError(msg) {
+  document.getElementById('mainContent').innerHTML = `<div class="error-state">Error: ${msg}</div>`;
+}
+
+function updateStats() {
+  const on  = allFiles.filter(f => !f.offline).length;
+  const off = allFiles.filter(f =>  f.offline && !isExcluded(f)).length;
+  document.getElementById('onlineCount').textContent  = `${on} Online`;
+  document.getElementById('offlineCount').textContent = `${off} Offline`;
+}
+
+function applyFilters() {
+  filteredFiles = allFiles.filter(f => {
+    const ms = activeState === 'all' || f.state === activeState;
+    const mq = !searchQuery || f.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return ms && mq;
+  });
+  renderGrid();
+}
+
+function renderGrid() {
+  const online  = filteredFiles.filter(f => !f.offline);
+  const offline = filteredFiles.filter(f =>  f.offline);
+  filteredFiles = [...online, ...offline];
+
+  const el = document.getElementById('mainContent');
+  if (!filteredFiles.length) { el.innerHTML = '<div class="empty-state">No display suites found</div>'; return; }
+
+  let html = '';
+
+  if (online.length) {
+    html += `<div class="section">
+      <div class="section-header">
+        <span class="section-title">Active</span>
+        <span class="section-count">${online.length} display suite${online.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="grid">`;
+    online.forEach((f, i) => html += renderCard(f, i));
+    html += '</div></div>';
+  }
+
+  if (offline.length) {
+    html += `<div class="section">
+      <div class="section-header">
+        <span class="section-title">No Recent Screenshot</span>
+        <span class="section-count">${offline.length} display suite${offline.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="grid">`;
+    offline.forEach((f, i) => html += renderCard(f, online.length + i));
+    html += '</div></div>';
+  }
+
+  el.innerHTML = html;
+  updateActionBar();
+}
+
+function renderCard(f, idx) {
+  const name  = cleanName(f.name);
+  const state = getStateLabel(f.state);
+  const sc    = getStateClass(f.state);
+  const time  = formatTime(f.modifiedTime);
+  const selectableClass = (notifyMode && f.offline) ? ' selectable' : '';
+  const selectedClass   = selectedIds.has(f.id) ? ' selected' : '';
+  const checkbox = `<div class="card-checkbox">${selectedIds.has(f.id) ? '✓' : ''}</div>`;
+  const excluded = isExcluded(f);
+  const exBtn = `<button class="exclude-toggle ${excluded ? 'active' : ''}" title="${excluded ? 'Excluded from offline count — click to include' : 'Exclude from offline count'}" onclick="toggleExclude(event, '${escapeAttr(f.nucKey)}')">⊘</button>`;
+  const excludedTag = excluded ? `<span class="excluded-tag">Excluded</span>` : '';
+
+  if (f.offline) {
+    return `<div class="card${selectableClass}${selectedClass}" data-id="${f.id}" data-idx="${idx}" onclick="onCardClick(event, ${idx})">
+      ${checkbox}
+      <div class="card-thumb">
+        ${exBtn}
+        <div class="offline-placeholder">
+          <div class="offline-icon">—</div>
+          <div class="offline-text">No recent screenshot</div>
+        </div>
+        <div class="card-status offline"></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name" title="${f.name}">${name}</div>
+        <div class="card-meta">
+          <span class="card-time">${time}</span>
+          <span class="card-state ${sc}">${state}</span>
+          ${excludedTag}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="card" data-id="${f.id}" data-idx="${idx}" onclick="onCardClick(event, ${idx})">
+    <div class="card-thumb">
+      ${exBtn}
+      <img src="${getThumbUrl(f.id)}" alt="${name}" loading="lazy" onerror="this.style.display='none'">
+      <div class="card-status online"></div>
+    </div>
+    <div class="card-info">
+      <div class="card-name" title="${f.name}">${name}</div>
+      <div class="card-meta">
+        <span class="card-time">${time}</span>
+        <span class="card-state ${sc}">${state}</span>
+        ${excludedTag}
+      </div>
+    </div>
+  </div>`;
+}
+
+function onCardClick(e, idx) {
+  const f = filteredFiles[idx];
+  if (!f) return;
+  if (notifyMode && f.offline) {
+    if (!effectiveProject(f)) {
+      e.preventDefault();
+      e.stopPropagation();
+      showToast('error', 'Unassigned NUC', 'Assign this NUC to a project on the NUCs tab before notifying.');
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    if (selectedIds.has(f.id)) selectedIds.delete(f.id);
+    else selectedIds.add(f.id);
+    renderGrid();
+    return;
+  }
+  openLightbox(idx);
+}
+
+// =============== NOTIFY MODE / SELECTION ===============
+function toggleNotifyMode() {
+  notifyMode = !notifyMode;
+  document.body.classList.toggle('notify-mode', notifyMode);
+  document.getElementById('notifyToggle').classList.toggle('active', notifyMode);
+  if (!notifyMode) selectedIds.clear();
+  renderGrid();
+}
+
+function clearSelection() {
+  selectedIds.clear();
+  renderGrid();
+}
+
+function getSelectedProjects() {
+  const projects = new Set();
+  selectedIds.forEach(id => {
+    const f = allFiles.find(x => x.id === id);
+    if (f) {
+      const proj = effectiveProject(f);
+      if (proj) projects.add(proj);
+    }
+  });
+  return [...projects];
+}
+
+function updateActionBar() {
+  const bar = document.getElementById('actionBar');
+  const count = selectedIds.size;
+  if (!notifyMode || count === 0) {
+    bar.classList.remove('visible');
+    return;
+  }
+  const projects = getSelectedProjects();
+  document.getElementById('selectionCount').textContent  = count;
+  document.getElementById('selectionPlural').textContent = count === 1 ? '' : 's';
+  document.getElementById('projectCount').textContent    = projects.length;
+  document.getElementById('projectPlural').textContent   = projects.length === 1 ? '' : 's';
+  bar.classList.add('visible');
+}
+
+// =============== CREATE DRAFTS ===============
+async function createDrafts() {
+  if (NOTIFICATIONS_URL.startsWith('PASTE_')) {
+    showToast('error', 'Setup required', 'NOTIFICATIONS_URL is not configured in dashboard.html.');
+    return;
+  }
+  const projects = getSelectedProjects().map(p => ({ project: p }));
+  if (!projects.length) return;
+
+  const btn = document.getElementById('createDraftsBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+
+  try {
+    const res = await fetch(NOTIFICATIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'createDrafts', projects: projects })
+    });
+    const data = await res.json();
+    if (data.status !== 'success') throw new Error(data.message || 'Unknown error');
+
+    let bodyHtml = `<strong>${data.created}</strong> draft${data.created === 1 ? '' : 's'} created in Gmail. Open the shared inbox to review and send.`;
+    if (data.skipped && data.skipped.length) {
+      bodyHtml += `<ul>${data.skipped.map(s => `<li>${s.project} — ${s.reason}</li>`).join('')}</ul>`;
+    }
+    showToast('success', 'Drafts ready', bodyHtml);
+    selectedIds.clear();
+    renderGrid();
+  } catch (e) {
+    showToast('error', 'Could not create drafts', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create drafts';
+  }
+}
+
+// =============== ASSIGNMENTS / NUCS TAB ===============
+async function loadAssignments() {
+  if (NOTIFICATIONS_URL.startsWith('PASTE_')) return;
+  try {
+    const res = await fetch(NOTIFICATIONS_URL + '?action=getAssignments');
+    const data = await res.json();
+    if (data.status === 'success') {
+      assignmentsData = data.assignments || {};
+      assignmentsLoaded = true;
+      // Re-render whatever is currently visible so projects resolve correctly
+      if (currentTab === 'dashboard') renderGrid();
+      if (currentTab === 'nucs')      renderNucsTab();
+    }
+  } catch (e) {
+    console.error('Could not load assignments:', e);
+  }
+}
+
+let nucsSearchQuery = '';
+
+function renderNucsTab() {
+  const el = document.getElementById('nucsContent');
+
+  if (!allFiles.length) {
+    el.innerHTML = '<div class="empty-state">No NUCs detected yet — wait for the dashboard to load first.</div>';
+    return;
+  }
+
+  const knownProjects = getAllProjects();
+  const datalistId = 'projectsList';
+
+  const rows = allFiles
+    .slice()
+    .sort((a, b) => a.nucKey.localeCompare(b.nucKey))
+    .filter(f => !nucsSearchQuery || f.nucKey.toLowerCase().includes(nucsSearchQuery.toLowerCase()));
+
+  let assigned = 0, unassigned = 0;
+  allFiles.forEach(f => { if (effectiveProject(f)) assigned++; else unassigned++; });
+  document.getElementById('nucsSummary').innerHTML =
+    `<strong>${assigned}</strong> assigned · <strong>${unassigned}</strong> unassigned`;
+
+  let html = `<datalist id="${datalistId}">${knownProjects.map(p => `<option value="${escapeAttr(p)}">`).join('')}</datalist>`;
+  html += `<table class="clients-table">
+    <thead>
+      <tr>
+        <th>NUC</th>
+        <th>Assigned project</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  rows.forEach(f => {
+    const current = assignmentsData[f.nucKey] || '';
+    html += `<tr data-nuc="${escapeAttr(f.nucKey)}">
+      <td class="dev-cell">${escapeAttr(f.nucKey)}</td>
+      <td><input class="client-input nuc-project-input" list="${datalistId}" value="${escapeAttr(current)}" placeholder="Start typing to search projects..."></td>
+      <td><span class="save-status" data-nuc-status="${escapeAttr(f.nucKey)}"></span></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+
+  el.querySelectorAll('input.nuc-project-input').forEach(input => {
+    input.addEventListener('input', () => {
+      const tr = input.closest('tr');
+      const nuc = tr.dataset.nuc;
+      scheduleNucSave(nuc, input.value);
+    });
+  });
+}
+
+function setNucSaveStatus(nuc, state, text) {
+  const el = document.querySelector(`[data-nuc-status="${CSS.escape(nuc)}"]`);
+  if (!el) return;
+  el.className = 'save-status ' + (state || '');
+  el.textContent = text || '';
+}
+
+function scheduleNucSave(nuc, project) {
+  setNucSaveStatus(nuc, 'saving', 'Saving...');
+  clearTimeout(nucSaveTimers[nuc]);
+  nucSaveTimers[nuc] = setTimeout(() => saveNucAssignment(nuc, project), 700);
+}
+
+async function saveNucAssignment(nuc, project) {
+  try {
+    const res = await fetch(NOTIFICATIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'updateAssignment', nucName: nuc, project: project })
+    });
+    const data = await res.json();
+    if (data.status !== 'success') throw new Error(data.message || 'Save failed');
+    if (project.trim()) assignmentsData[nuc] = project.trim();
+    else delete assignmentsData[nuc];
+    setNucSaveStatus(nuc, 'saved', 'Saved');
+    setTimeout(() => setNucSaveStatus(nuc, '', ''), 1500);
+    // Refresh the summary count
+    let assigned = 0, unassigned = 0;
+    allFiles.forEach(f => { if (effectiveProject(f)) assigned++; else unassigned++; });
+    document.getElementById('nucsSummary').innerHTML =
+      `<strong>${assigned}</strong> assigned · <strong>${unassigned}</strong> unassigned`;
+  } catch (e) {
+    setNucSaveStatus(nuc, 'error', 'Error');
+  }
+}
+
+async function autoAssignUnassigned() {
+  const btn = document.querySelector('.auto-assign-btn');
+  const targets = allFiles.filter(f => !effectiveProject(f));
+  if (!targets.length) {
+    showToast('success', 'Nothing to do', 'Every NUC already has a project assigned.');
+    return;
+  }
+  if (!confirm(`Auto-assign ${targets.length} unassigned NUC${targets.length === 1 ? '' : 's'} using the parser suggestion?`)) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Assigning...';
+
+  let ok = 0, failed = 0;
+  for (const f of targets) {
+    const guess = extractDevelopment(f.name);
+    if (!guess) { failed++; continue; }
+    try {
+      const res = await fetch(NOTIFICATIONS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateAssignment', nucName: f.nucKey, project: guess })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        assignmentsData[f.nucKey] = guess;
+        ok++;
+      } else failed++;
+    } catch (e) { failed++; }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Auto-assign unassigned';
+  showToast('success', 'Auto-assignment complete',
+    `Assigned <strong>${ok}</strong> NUC${ok === 1 ? '' : 's'}` + (failed ? ` · ${failed} failed` : '') + '. Review and correct any wrong matches.');
+  renderNucsTab();
+}
+
+// =============== CLIENTS TAB ===============
+async function loadClients() {
+  const el = document.getElementById('clientsContent');
+  el.innerHTML = '<div class="loading-state"><div class="loading-ring"></div><div class="loading-text">Loading projects</div></div>';
+
+  if (NOTIFICATIONS_URL.startsWith('PASTE_')) {
+    el.innerHTML = '<div class="error-state">NOTIFICATIONS_URL is not configured in dashboard.html.</div>';
+    return;
+  }
+
+  try {
+    const res = await fetch(NOTIFICATIONS_URL + '?action=getAll');
+    const data = await res.json();
+    if (data.status !== 'success') throw new Error(data.message || 'Unknown error');
+    clientsData     = data.clients     || {};
+    assignmentsData = data.assignments || assignmentsData;
+    assignmentsLoaded = true;
+    renderClientsTable();
+  } catch (e) {
+    el.innerHTML = `<div class="error-state">Error: ${e.message}</div>`;
+  }
+}
+
+// Projects in the system = distinct projects that NUCs have been assigned to,
+// plus any projects that have client data already saved (so contacts aren't orphaned).
+function getAllProjects() {
+  const projects = new Set();
+  Object.values(assignmentsData).forEach(p => { if (p) projects.add(p); });
+  Object.keys(clientsData).forEach(p => projects.add(p));
+  return [...projects].sort();
+}
+
+function renderClientsTable() {
+  const el = document.getElementById('clientsContent');
+  const projects = getAllProjects();
+
+  if (!projects.length) {
+    el.innerHTML = '<div class="empty-state">No projects yet — assign NUCs to projects on the NUCs tab to get started.</div>';
+    return;
+  }
+
+  let html = `<table class="clients-table">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Primary name</th>
+        <th>Primary email</th>
+        <th>CC emails (comma separated)</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  projects.forEach(project => {
+    const c = clientsData[project] || {};
+    html += `<tr data-project="${escapeAttr(project)}">
+      <td class="dev-cell">${escapeAttr(project)}</td>
+      <td><input class="client-input" data-field="primaryName"  value="${escapeAttr(c.primaryName  || '')}" placeholder="e.g. Sarah Lee"></td>
+      <td><input class="client-input" data-field="primaryEmail" value="${escapeAttr(c.primaryEmail || '')}" placeholder="sarah@example.com"></td>
+      <td><input class="client-input" data-field="ccEmails"     value="${escapeAttr(c.ccEmails     || '')}" placeholder="another@example.com, third@example.com"></td>
+      <td><span class="save-status" data-project-status="${escapeAttr(project)}"></span></td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  el.innerHTML = html;
+
+  // Attach listeners
+  el.querySelectorAll('input.client-input').forEach(input => {
+    input.addEventListener('input', () => {
+      const tr = input.closest('tr');
+      const project = tr.dataset.project;
+      const fields = {};
+      tr.querySelectorAll('input.client-input').forEach(i => fields[i.dataset.field] = i.value);
+      scheduleSave(project, fields);
+    });
+  });
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setSaveStatus(project, state, text) {
+  const el = document.querySelector(`[data-project-status="${CSS.escape(project)}"]`);
+  if (!el) return;
+  el.className = 'save-status ' + (state || '');
+  el.textContent = text || '';
+}
+
+function scheduleSave(project, fields) {
+  setSaveStatus(project, 'saving', 'Saving...');
+  clearTimeout(clientSaveTimers[project]);
+  clientSaveTimers[project] = setTimeout(() => saveClient(project, fields), 700);
+}
+
+async function saveClient(project, fields) {
+  try {
+    const res = await fetch(NOTIFICATIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'updateClient', project: project, ...fields })
+    });
+    const data = await res.json();
+    if (data.status !== 'success') throw new Error(data.message || 'Save failed');
+    clientsData[project] = { project: project, ...fields };
+    setSaveStatus(project, 'saved', 'Saved');
+    setTimeout(() => setSaveStatus(project, '', ''), 1800);
+  } catch (e) {
+    setSaveStatus(project, 'error', 'Error');
+  }
+}
+
+// =============== TOAST ===============
+let toastTimer = null;
+function showToast(kind, title, bodyHtml) {
+  const t = document.getElementById('toast');
+  t.className = 'toast ' + (kind || '');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastBody').innerHTML = bodyHtml;
+  requestAnimationFrame(() => t.classList.add('visible'));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), 7000);
+}
+
+// =============== LIGHTBOX ===============
+function openLightbox(idx) {
+  currentIndex = idx;
+  showLightboxItem();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showLightboxItem() {
+  const f = filteredFiles[currentIndex];
+  if (!f) return;
+  document.getElementById('lightboxImg').src = getFullUrl(f.id);
+  document.getElementById('lightboxName').textContent = cleanName(f.name);
+  document.getElementById('lightboxTime').textContent = formatTime(f.modifiedTime) + ' — ' + new Date(f.modifiedTime).toLocaleString('en-AU');
+}
+
+function navigateLightbox(dir) {
+  currentIndex = (currentIndex + dir + filteredFiles.length) % filteredFiles.length;
+  showLightboxItem();
+}
+
+function closeLightbox(e) { if (e.target === document.getElementById('lightbox')) closeLightboxBtn(); }
+function closeLightboxBtn() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+
+// =============== EVENT LISTENERS ===============
+document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; applyFilters(); });
+document.getElementById('stateFilter').addEventListener('change', e => {
+  activeState = e.target.value;
+  applyFilters();
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightboxBtn();
+  if (e.key === 'ArrowLeft') navigateLightbox(-1);
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+});
+
+function resetDashboard() {
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  activeState = 'all';
+  const sf = document.getElementById('stateFilter');
+  if (sf) sf.value = 'all';
+  switchTab('dashboard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  applyFilters();
+}
+
+// NUCs tab search wiring
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'nucsSearch') {
+    nucsSearchQuery = e.target.value;
+    renderNucsTab();
+  }
+});
+
+// =============== COPY OFFLINE REPORT ===============
+function parseClientProjectFromCleanName(clean) {
+  // clean is in the form: "Client / Project / Display Name" (via cleanName)
+  const parts = String(clean).split(' / ');
+  if (parts.length >= 2) return parts[0] + ' / ' + parts[1];
+  return '';
+}
+
+async function copyOfflineReport() {
+  const btn = document.getElementById('copyOfflineBtn');
+
+  // Collect offline, non-excluded items as cleaned names
+  const cleaned = allFiles
+    .filter(f => f.offline && !isExcluded(f))
+    .map(f => cleanName(f.name));
+
+  // Group by project (client + project). If a project has >1 displays, collapse to one line with (suite)
+  const projectCounts = new Map();        // key: "Client / Project" → count
+  const projectToSingleFull = new Map();  // for projects that end up with exactly 1 item: store its full name
+  const noProjectNames = new Set();       // items we couldn't parse into client/project
+
+  for (const cn of cleaned) {
+    const key = parseClientProjectFromCleanName(cn);
+    if (key) {
+      const prev = projectCounts.get(key) || 0;
+      projectCounts.set(key, prev + 1);
+      if (prev === 0) {
+        // tentatively remember the full display name for the first occurrence
+        projectToSingleFull.set(key, cn);
+      } else if (prev === 1) {
+        // now we know this project has at least 2; we will output as a suite, so drop the stored single
+        projectToSingleFull.delete(key);
+      }
+    } else {
+      noProjectNames.add(cn);
+    }
+  }
+
+  const lines = [];
+
+  // Projects: add either suite line or the original single full line
+  for (const [key, count] of projectCounts) {
+    if (count > 1) {
+      lines.push(`${key} (suite)`);
+    } else {
+      const full = projectToSingleFull.get(key) || key; // fallback to key just in case
+      lines.push(full);
+    }
+  }
+
+  // Add items with no parsable project as-is
+  for (const name of noProjectNames) lines.push(name);
+
+  // Sort for stable output
+  lines.sort((a, b) => a.localeCompare(b, 'en-AU', { sensitivity: 'base' }));
+
+  const text = `Showcase Health Check\nOffline NUCS:${lines.length ? '\n' + lines.join('\n') : ''}`;
+
+  const okToast = () => {
+    const n = lines.length;
+    const plural = n === 1 ? '' : 's';
+    showToast('success', 'Copied', `${n} line${plural} copied to clipboard`);
+  };
+
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      okToast();
+    } else {
+      throw new Error('Clipboard API not available');
+    }
+  } catch (e) {
+    // Fallback using a temporary textarea
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const succeeded = document.execCommand && document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (succeeded) okToast(); else throw new Error('execCommand failed');
+    } catch (err) {
+      showToast('error', 'Copy failed', 'Could not access clipboard. The text will be shown in an alert to copy manually.');
+      alert(text);
+    }
+  }
+
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = original; }, 1200);
+  }
+}
+
+// =============== INIT ===============
+setInterval(loadScreenshots, 5 * 60 * 1000);
+loadAssignments();
+loadExcluded();
+loadScreenshots();
+</script>
+</body>
+</html>
