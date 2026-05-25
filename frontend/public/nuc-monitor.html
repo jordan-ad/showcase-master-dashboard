@@ -1085,11 +1085,14 @@
   </div>
 </div>
 
+<script src="/nuc-config.js"></script>
 <script>
 // =============== CONFIG ===============
-const API_KEY            = 'AIzaSyBRVIbYrd43HdqoxNiw601_xC4jwTT_sEY';
-const FOLDER_ID          = '1KaH19gjY4Kln-NHhqkLPD_tMj85tTt2m';
-const NOTIFICATIONS_URL  = 'https://script.google.com/macros/s/AKfycbzi8xzA3l0UZ4ii6rJWnxuwbdUhYLCVmA5tAG6-Rygu-QcydfXaNchfqVJ8d_7I8wSX/exec';
+// Values loaded from /public/nuc-config.js (gitignored — never commit that file)
+// Copy nuc-config.example.js → nuc-config.js and fill in real values
+const API_KEY           = window.NUC_CONFIG?.API_KEY           || '';
+const FOLDER_ID         = window.NUC_CONFIG?.FOLDER_ID         || '';
+const NOTIFICATIONS_URL = window.NUC_CONFIG?.NOTIFICATIONS_URL || '';
 
 // =============== STATE ===============
 let allFiles        = [];

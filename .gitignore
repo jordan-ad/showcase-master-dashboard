@@ -28,3 +28,6 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# NUC Monitor secrets — copy nuc-config.example.js → nuc-config.js with real values
+frontend/public/nuc-config.js

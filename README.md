@@ -14,6 +14,7 @@ npm run dev    # http://localhost:3000
 
 ## Documentation
 
-- [Claude context / project handoff](docs/CLAUDE.md) — start here when opening in a new session
+- [Setup guide](docs/setup.md) — installing on a new machine, NUC Monitor config
+- [Claude context / project handoff](docs/CLAUDE.md) — start here when opening in a new Claude Code session
 - [Feature documentation](docs/features.md) — what each tab does, integration notes
 - [Architecture](docs/architecture.md) — stack, folder structure, DB schema, infrastructure
